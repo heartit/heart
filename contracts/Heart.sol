@@ -6,19 +6,24 @@ contract Heart {
     event BeatAdded();
 
     struct Beat {
+        // to-do: add timestamp
         address addr;
-        string data;
         uint256 rhythm;
     }
 
-    Beat[] public beats;
+    mapping(string => Beat[]) dataToBeat;
 
     function addBeat(
         address _addr,
         string memory _data,
         uint256 _rhythm
     ) public {
-        beats.push(Beat({addr: _addr, data: _data, rhythm: _rhythm}));
+        // to-do: add timestamp when pushing beat
+        dataToBeat[_data].push(Beat({addr: _addr, rhythm: _rhythm}));
         emit BeatAdded();
+    }
+
+    function getBeats(string memory _data) public view returns (Beat[] memory) {
+        return dataToBeat[_data];
     }
 }
