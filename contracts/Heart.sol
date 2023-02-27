@@ -8,8 +8,10 @@ contract Heart {
 
     struct Beat {
         // to-do: add timestamp
+        string data;
         address addr;
         uint256 rhythm;
+        uint256 goalRhythm;
     }
 
     mapping(string => Beat[]) dataToBeat;
@@ -25,7 +27,9 @@ contract Heart {
     ) public {
         // to-do: add timestamp when pushing beat
         require(_rhythm >= 0 && _rhythm <= 9999999, "[ERR]");
-        dataToBeat[_data].push(Beat({addr: _addr, rhythm: _rhythm}));
+        dataToBeat[_data].push(
+            Beat({data: _data, addr: _addr, rhythm: _rhythm, goalRhythm: 0})
+        );
         emit BeatAdded();
     }
 
@@ -33,23 +37,15 @@ contract Heart {
         return dataToBeat[_data];
     }
 
-    function reward(
-        string[] memory _data,
-        uint256[] memory _rhythm,
-        bool _success
-    ) public payable {
-        require(_success == true, "[ERR]");
-        require(_data.length == _rhythm.length, "[ERR2]");
-        for (uint256 i = 0; i < _data.length; i++) {
-            Beat[] memory beats = getBeats(_data[i]);
-            for (uint256 j = 0; j < beats.length; j++) {
-                if (beats[j].rhythm == _rhythm[i]) {
-                    (bool sent, ) = beats[j].addr.call{
-                        value: 1000000000000000000
-                    }("");
-                    require(sent, "[ERR3]");
-                }
-            }
+    function reward(Beat[] memory _beats) public payable {
+        require(msg.value > 0, "[ERR] Message value is not positive.");
+        require(_beats.length > 0, "[ERR] Requires an array of Beats.");
+
+        uint256 signleReward = msg.value / _beats.length;
+
+        for (uint256 i = 0; i < _beats.length; i++) {
+            (bool sent, ) = _beats[i].addr.call{value: signleReward}("");
+            require(sent, "[ERR] ETH tranfer failed.");
         }
     }
 }
