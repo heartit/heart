@@ -37,7 +37,7 @@ contract Heart {
         return dataToBeat[_data];
     }
 
-    function reward(Beat[] memory _beats) public payable {
+    function reward(Beat[] memory _beats) external payable {
         require(msg.value > 0, "[ERR] Message value is not positive.");
         require(_beats.length > 0, "[ERR] Requires an array of Beats.");
 

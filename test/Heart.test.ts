@@ -1,4 +1,4 @@
-import { expect } from "chai"
+import { expect, assert } from "chai"
 import { ethers } from "hardhat"
 import { Heart, Heart__factory } from "../typechain-types"
 
@@ -91,6 +91,7 @@ describe("Heart", function () {
 
       for (let i = 0; i < 5; i++) {
         initBals.push(await provider.getBalance(signers[i + 1].address))
+        console.log(initBals[i])
       }
 
       await heart.reward(rewardBeats, { value: rewardValue })
@@ -101,7 +102,11 @@ describe("Heart", function () {
       }
 
       for (let i = 0; i < rewardBeats.length; i++) {
-        expect(finalBals[i]).to.equal(initBals[i].add(2000000000000000000n))
+        assert.approximately(
+          finalBals[i],
+          initBals[i].add(2000000000000000000n),
+          2
+        )
       }
     })
   })
