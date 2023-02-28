@@ -20,20 +20,23 @@ contract Heart {
         owner = msg.sender;
     }
 
-    function addBeat(
-        address _addr,
-        string memory _data,
-        uint256 _rhythm
-    ) public {
+    function addBeat(string memory _data, uint256 _rhythm) public {
         // to-do: add timestamp when pushing beat
         require(_rhythm >= 0 && _rhythm <= 9999999, "[ERR]");
         dataToBeat[_data].push(
-            Beat({data: _data, addr: _addr, rhythm: _rhythm, goalRhythm: 0})
+            Beat({
+                data: _data,
+                addr: msg.sender,
+                rhythm: _rhythm,
+                goalRhythm: 0
+            })
         );
         emit BeatAdded();
     }
 
-    function getBeats(string memory _data) public view returns (Beat[] memory) {
+    function getBeats(
+        string memory _data
+    ) external view returns (Beat[] memory) {
         return dataToBeat[_data];
     }
 
