@@ -1,0 +1,28 @@
+{
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.1",
+    "hardhat": "^2.12.7",
+    "prettier": "^2.8.4",
+    "prettier-plugin-solidity": "^1.1.2"
+  },
+  "name": "heart",
+  "description": "The Heart of HeartIt",
+  "version": "0.0.1",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heartit/heart.git"
+  },
+  "author": "5r33n",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/heartit/heart/issues"
+  },
+  "homepage": "https://github.com/heartit/heart#readme"
+}
