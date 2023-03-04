@@ -6,8 +6,8 @@ async function main() {
   await initHeart("0x5FbDB2315678afecb367f032d93F642f64180aa3")
   //await addBeats(3, 1, "tree", 1000000)
   //await getBeats("tree")
-  await addBeats(8, 8, "fossil", 1000000)
-  await getBeats("fossil")
+  //await addBeats(8, 8, "fossil", 1000000)
+  await getBeats("foobar")
 }
 main()
 
