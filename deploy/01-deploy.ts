@@ -7,8 +7,6 @@ import {
   VERIFICATION_BLOCK_CONFIRMATIONS,
 } from "../helper-hardhat-config"
 
-const FUND_AMOUNT = "1000000000000000000000"
-
 const deployHeart: DeployFunction = async function (
   hre: HardhatRuntimeEnvironment
 ) {
