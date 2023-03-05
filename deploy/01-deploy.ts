@@ -21,12 +21,18 @@ const deployHeart: DeployFunction = async function (
     : VERIFICATION_BLOCK_CONFIRMATIONS
 
   log("----------------------------------------------------")
-  const args: any[] = [
-    networkConfig[network.config.chainId!]["gasLane"],
-    networkConfig[network.config.chainId!]["callbackGasLimit"],
-  ]
+
   const heart = await deploy("Heart", {
     from: deployer,
+    log: true,
+    waitConfirmations: waitBlockConfirmations,
+  })
+
+  const args: any[] = [heart.address]
+
+  const heartEarth = await deploy("HeartEarth", {
+    from: deployer,
+    args: args,
     log: true,
     waitConfirmations: waitBlockConfirmations,
   })

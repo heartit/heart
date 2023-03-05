@@ -36,3 +36,6 @@ export const VERIFICATION_BLOCK_CONFIRMATIONS = 6
 export const frontEndContractsFile =
   "../heart-ui/constants/contractAddresses.json"
 export const frontEndAbiFile = "../heart-ui/constants/abi.json"
+export const earthContractsFile =
+  "../heart-ui/constants/earthContractAddresses.json"
+export const earthAbiFile = "../heart-ui/constants/earthAbi.json"
