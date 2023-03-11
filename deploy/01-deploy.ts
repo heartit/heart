@@ -13,8 +13,8 @@ const deployHeart: DeployFunction = async function (
   const { deployments, getNamedAccounts, network, ethers } = hre
   const { deploy, log } = deployments
   const { deployer } = await getNamedAccounts()
-  // const chainId = network.config.chainId
-  const chainId = 31337
+  const chainId = network.config.chainId
+  //const chainId = 31337
 
   const waitBlockConfirmations = developmentChains.includes(network.name)
     ? 1
@@ -43,11 +43,12 @@ const deployHeart: DeployFunction = async function (
     process.env.ETHERSCAN_API_KEY
   ) {
     log("[W8] Verifying...")
-    await verify(heart.address, args)
+    await verify(heart.address)
+    await verify(heartEarth.address, args)
   }
 
   //log("Run Price Feed contract with command:")
-  const networkName = network.name == "hardhat" ? "localhost" : network.name
+  //const networkName = network.name == "hardhat" ? "localhost" : network.name
   //log(`yarn hardhat run scripts/enterRaffle.js --network ${networkName}`)
   log("----------------------------------------------------")
 }

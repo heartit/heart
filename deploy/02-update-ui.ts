@@ -12,7 +12,8 @@ const updateUI: DeployFunction = async function (
   hre: HardhatRuntimeEnvironment
 ) {
   const { network, ethers } = hre
-  const chainId = "31337"
+  const chainId = network.config.chainId
+  //const chainId = "31337"
   console.log(process.env.UPDATE_FRONT_END)
   if (process.env.UPDATE_FRONT_END) {
     console.log("[W8] Writing to front end...")
