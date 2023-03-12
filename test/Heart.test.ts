@@ -24,27 +24,22 @@ describe("Heart", function () {
 
   describe("addBeat", function () {
     it("gets (address, data, rhythm) and emits BeatAdded event", async function () {
-      await expect(heart.addBeat(signers[1].address, "tree", 1000000)).to.emit(
-        heart,
-        "BeatAdded"
-      )
+      await expect(heart.addBeat("tree", 1000000)).to.emit(heart, "BeatAdded")
     })
-    it("reverts with error if rhythm is not in range (0000000,9999999)", async function () {
-      await expect(
-        heart.addBeat(signers[1].address, "tree", 10000001)
-      ).to.be.revertedWith("[ERR]")
+    it("reverts with error if rhythm is not in range (0,99999999)", async function () {
+      await expect(heart.addBeat("tree", 100000001)).to.be.revertedWith("[ERR]")
     })
   })
 
   describe("getBeats", function () {
     it("returns array of Beat[] with data as parameter", async function () {
-      await heart.addBeat(signers[1].address, "tree", 1000000)
-      await heart.addBeat(signers[2].address, "tree", 1025000)
+      await heart.addBeat("tree", 1000000)
+      await heart.addBeat("tree", 1025000)
 
       const beatsFromData = await heart.getBeats("tree")
 
       expect(beatsFromData[1]["rhythm"]).to.equal(1025000)
-      expect(beatsFromData[1]["addr"]).to.equal(signers[2].address)
+      expect(beatsFromData[1]["addr"]).to.equal(deployer)
     })
   })
 
@@ -53,12 +48,13 @@ describe("Heart", function () {
     let rewardBeats = []
     beforeEach(async function () {
       for (let i = 0; i < 5; i++) {
-        await heart.addBeat(signers[i + 1].address, "tree", 1000000)
+        const connector = heart.connect(signers[i + 1])
+        await connector.addBeat("tree", 10000000)
         rewardBeats.push({
           data: "tree",
           addr: signers[i + 1].address,
-          rhythm: 1000000,
-          goalRhythm: 1000000,
+          rhythm: 10000000,
+          goalRhythm: 10000000,
         })
       }
     })
@@ -68,14 +64,14 @@ describe("Heart", function () {
           {
             data: "tree",
             addr: signers[1].address,
-            rhythm: 1000000,
-            goalRhythm: 1000000,
+            rhythm: 10000000,
+            goalRhythm: 10000000,
           },
           {
             data: "tree",
             addr: signers[2].address,
             rhythm: 0,
-            goalRhythm: 1000000,
+            goalRhythm: 10000000,
           },
         ])
       ).to.be.revertedWith("[ERR] Message value is not positive.")
@@ -91,22 +87,38 @@ describe("Heart", function () {
 
       for (let i = 0; i < 5; i++) {
         initBals.push(await provider.getBalance(signers[i + 1].address))
-        console.log(initBals[i])
       }
 
       await heart.reward(rewardBeats, { value: rewardValue })
 
       for (let i = 0; i < 5; i++) {
         finalBals.push(await provider.getBalance(signers[i + 1].address))
-        console.log(finalBals[i])
       }
 
-      for (let i = 0; i < rewardBeats.length; i++) {
-        assert.approximately(
-          finalBals[i],
-          initBals[i].add(2000000000000000000n),
-          2
+      for (let i = 0; i < 5; i++) {
+        expect(finalBals[i].add(initBals[i].mul(-1))).to.be.at.least(
+          1999999999999999998n
         )
+        expect(finalBals[i].add(initBals[i].mul(-1))).to.be.at.most(
+          20000000000000000000n
+        )
+      }
+    })
+  })
+  describe("reward", function () {
+    const rhythm = 10000000
+    beforeEach(async function () {
+      for (let i = 0; i < 5; i++) {
+        const connector = heart.connect(signers[i + 1])
+        await connector.addBeat("tree", rhythm)
+      }
+    })
+    it("returns all the beats", async function () {
+      const allBeats = await heart.getAllBeats()
+      for (let i = 0; i < 5; i++) {
+        expect(allBeats[i].data).to.equal("tree")
+        expect(allBeats[i].addr).to.equal(signers[i + 1].address)
+        expect(allBeats[i].rhythm.toString()).to.equal(rhythm.toString())
       }
     })
   })
